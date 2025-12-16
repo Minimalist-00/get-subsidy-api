@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import argparse
 from datetime import datetime
 
 def fetch_subsidy_detail(subsidy_id):
@@ -90,9 +91,12 @@ def fetch_subsidy_detail(subsidy_id):
         
         # ファイルに保存
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_dir = "../../output"
+        # スクリプトのディレクトリから2階層上がプロジェクトルート
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(os.path.dirname(script_dir))
+        output_dir = os.path.join(project_root, "output")
         os.makedirs(output_dir, exist_ok=True)
-        filename = f"{output_dir}/subsidy_detail_{subsidy_id}_{timestamp}.json"
+        filename = os.path.join(output_dir, f"subsidy_detail_{subsidy_id}_{timestamp}.json")
         
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
@@ -116,6 +120,35 @@ def fetch_subsidy_detail(subsidy_id):
 
 
 if __name__ == "__main__":
-    # 伝統的工芸品産業支援補助金（令和7年度災害復興事業）の詳細を取得
-    subsidy_id = "a0WJ200000CDRBGMA5"
+    parser = argparse.ArgumentParser(
+        description="J-Grants APIから補助金の詳細情報を取得します",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用例:
+  python fetch_subsidy_detail.py a0WJ200000CDRBGMA5
+  python fetch_subsidy_detail.py --id a0WJ200000CDRBGMA5
+        """
+    )
+    parser.add_argument(
+        "subsidy_id",
+        nargs="?",
+        help="補助金のID（例: a0WJ200000CDRBGMA5）"
+    )
+    parser.add_argument(
+        "--id",
+        dest="subsidy_id_option",
+        help="補助金のID（オプション形式）"
+    )
+    
+    args = parser.parse_args()
+    
+    # 引数の優先順位: 位置引数 > --id オプション
+    subsidy_id = args.subsidy_id or args.subsidy_id_option
+    
+    if not subsidy_id:
+        parser.print_help()
+        print("\n❌ エラー: 補助金IDを指定してください")
+        exit(1)
+    
     fetch_subsidy_detail(subsidy_id)
+
