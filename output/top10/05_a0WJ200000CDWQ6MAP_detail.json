@@ -1,0 +1,23 @@
+{
+  "id": "a0WJ200000CDWQ6MAP",
+  "name": "S-00007613",
+  "title": "【SBT】動作確認用補助金202512_1【補助金の支払いはありません】",
+  "subsidy_catch_phrase": "12月リリースの動作確認用データです",
+  "detail": "<p><strong style=\"color: rgb(0, 111, 173);\">■目的・概要</strong></p><p>動作確認の為、実際の補助金ではありません。</p><p><br></p><p><strong style=\"color: rgb(0, 111, 173);\">■根拠法令</strong></p><p>（ここに補助金に紐づく根拠法令を入力して下さい。）</p><p><br></p><p><strong style=\"color: rgb(0, 111, 173);\">■応募資格</strong></p><p>（ここに補助対象者・応募資格を入力して下さい。）</p><p><br></p><p><strong style=\"color: rgb(0, 111, 173);\">■地理条件</strong></p><p>（ここに必要な地理条件を入力して下さい。）</p><p><br></p><p><strong style=\"color: rgb(0, 111, 173);\">■備考</strong></p><p>（ここに備考を入力して下さい。）</p><p><br></p><p><strong style=\"color: rgb(0, 111, 173);\">■問合せ先</strong></p><p>（ここに問合せ先を入力して下さい。）</p><p><br></p><p><strong style=\"color: rgb(0, 111, 173);\">■参照URL</strong></p><p>（ここに参照URLを入力して下さい。URLをリンク化したい場合は、リンクの埋め込みを行ってください。）</p>",
+  "use_purpose": "人材育成を行いたい",
+  "industry": "情報通信業",
+  "target_area_search": "北海道 / 山形県 / 群馬県 / 千葉県 / 神奈川県 / 山梨県 / 富山県 / 宮城県",
+  "target_area_detail": "札幌市のみ/やまｇた/みと/まえばし/ちば/よこはま/こうふ/とやま/せんだい",
+  "target_number_of_employees": "100名以下",
+  "subsidy_rate": "2/3",
+  "subsidy_max_limit": 0,
+  "acceptance_start_datetime": "2025-09-30T15:00Z",
+  "acceptance_end_datetime": "2025-09-30T15:15Z",
+  "project_end_deadline": "2026-10-31T15:00Z",
+  "request_reception_presence": "有",
+  "is_enable_multiple_request": true,
+  "front_subsidy_detail_page_url": "https://www.jgrants-portal.go.jp/subsidy/a0WJ200000CDWQ6MAP",
+  "application_guidelines": [],
+  "outline_of_grant": [],
+  "application_form": []
+}
