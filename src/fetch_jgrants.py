@@ -20,7 +20,7 @@ def fetch_subsidies_list(params=None):
             "keyword": "補助金",
             "sort": "created_date",
             "order": "DESC",
-            "acceptance": "1"  # 1: 受付中, 0: すべて
+            "acceptance": "0"  # 1: 受付中, 0: すべて
         }
     
     try:

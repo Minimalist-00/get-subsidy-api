@@ -44,30 +44,10 @@ def get_existing_subsidy_ids(blob_service_client, container_name):
     return existing_ids
 
 
-def is_empty_detail(detail_data):
-    """
-    詳細データが空かどうかを判定
-    application_guidelines, outline_of_grant, application_formが全て空配列の場合はTrue
-    
-    Args:
-        detail_data: 補助金詳細データ
-    
-    Returns:
-        bool: 空の場合True
-    """
-    if not detail_data:
-        return True
-    
-    guidelines = detail_data.get('application_guidelines', [])
-    outline = detail_data.get('outline_of_grant', [])
-    form = detail_data.get('application_form', [])
-    
-    return len(guidelines) == 0 and len(outline) == 0 and len(form) == 0
-
-
 def save_subsidy_to_blob(blob_service_client, container_name, subsidy_id, detail_data):
     """
     補助金詳細データをBlobに保存
+    application_guidelines, outline_of_grant, application_formフィールドは除外する
     
     Args:
         blob_service_client: BlobServiceClient
@@ -75,12 +55,18 @@ def save_subsidy_to_blob(blob_service_client, container_name, subsidy_id, detail
         subsidy_id: 補助金ID
         detail_data: 補助金詳細データ
     """
+    # 除外するフィールドのリスト
+    exclude_fields = ['application_guidelines', 'outline_of_grant', 'application_form']
+    
+    # 除外フィールドを削除したデータを作成
+    filtered_data = {k: v for k, v in detail_data.items() if k not in exclude_fields}
+    
     blob_client = blob_service_client.get_blob_client(
         container=container_name,
         blob=f"{subsidy_id}.json"
     )
     
-    json_data = json.dumps(detail_data, ensure_ascii=False, indent=2)
+    json_data = json.dumps(filtered_data, ensure_ascii=False, indent=2)
     blob_client.upload_blob(json_data, overwrite=True)
 
 
@@ -93,11 +79,9 @@ def main():
     
     # 1. Blob Storageクライアントを取得
     blob_service_client = get_blob_service_client()
-    print(f"Blob Storageに接続しました (コンテナ: {container_name})")
     
     # 2. 既存の補助金IDを取得
     existing_ids = get_existing_subsidy_ids(blob_service_client, container_name)
-    print(f"既存の補助金データ: {len(existing_ids)}件")
     
     # 3. 補助金一覧を取得
     subsidies_data = fetch_subsidies_list()
@@ -106,11 +90,9 @@ def main():
         return
     
     subsidies = subsidies_data.get("result", [])
-    print(f"補助金一覧を取得しました: {len(subsidies)}件")
     
     # 4. 新規の補助金のみをフィルタリング
     new_subsidies = [s for s in subsidies if s.get("id") not in existing_ids]
-    print(f"新規補助金: {len(new_subsidies)}件")
     
     if len(new_subsidies) == 0:
         print("新規の補助金はありません")
@@ -118,41 +100,35 @@ def main():
     
     # 5. 各補助金の詳細を取得してBlobに保存
     saved_count = 0
-    skipped_count = 0
+    failed_count = 0
     
     for subsidy in new_subsidies:
         subsidy_id = subsidy.get("id")
         title = subsidy.get("title", "不明")
         
-        print(f"\n処理中: {subsidy_id} - {title[:50]}...")
-        
         # 詳細情報を取得
         detail_data = fetch_subsidy_detail(subsidy_id)
         
         if not detail_data:
-            print(f"  詳細情報の取得に失敗しました")
-            continue
-        
-        # 空のデータはスキップ
-        if is_empty_detail(detail_data):
-            print(f"  空のデータのためスキップしました")
-            skipped_count += 1
+            print(f"詳細情報の取得に失敗: {subsidy_id} - {title[:50]}...")
+            failed_count += 1
             continue
         
         # Blobに保存
         try:
             save_subsidy_to_blob(blob_service_client, container_name, subsidy_id, detail_data)
-            print(f"  Blobに保存しました")
             saved_count += 1
         except Exception as e:
-            print(f"  保存エラー: {e}")
+            print(f"保存エラー: {subsidy_id} - {title[:50]}... - {e}")
+            failed_count += 1
     
     # 6. 結果サマリー
     print(f"\n{'='*60}")
     print(f"処理完了")
     print(f"   新規補助金: {len(new_subsidies)}件")
     print(f"   保存成功: {saved_count}件")
-    print(f"   スキップ: {skipped_count}件")
+    if failed_count > 0:
+        print(f"   失敗: {failed_count}件")
     print(f"{'='*60}")
 
 
