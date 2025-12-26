@@ -8,7 +8,7 @@
 2. 補助金 API を叩いて、補助金の一覧を取得
 3. 補助金の一覧 API を叩い時に取得できたそれぞれの id を参照して詳細情報を取得し、それぞれを blob に格納する
 
-一覧と詳細取得のコードは[fetch_jgrants.py](../src/fetch_jgrants.py)と[fetch_subsidy_detail.py](../src/fetch_subsidy_detail.py)を参考にしてほしい。
+一覧と詳細取得のコードは[fetch_jgrants.py](../src/fetch_jgrants.py)と[fetch_subsidy_detail.py](../src/fetch_subsidy_detail.py)である
 
 ## 留意点
 
